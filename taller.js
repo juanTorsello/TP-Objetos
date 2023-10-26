@@ -31,15 +31,15 @@ function ejercicio3() {
 
 // Ejercicio 4
 function ejercicio4() {
-  Robot = function(nombre,peso,directiva,f_directiva){
+  Robot = function(nombre,peso,directiva,fDirectiva){
     this.nombre = nombre;
     this.peso = peso;
     this.directiva = directiva;
-    this[directiva] = f_directiva;
+    this[directiva] = fDirectiva;
 
   }
-  // ver si esta bien esto asi
-  Robot.prototype.presentarse = Malambo.presentarse;  
+  Robot.prototype.presentarse = Malambo.presentarse;
+  Object.setPrototypeOf(Malambo, Robot.prototype);
 }
 
 
@@ -58,15 +58,15 @@ function ejercicio5() {
     return msg;
   }
 
-  Milonga = new Robot("Milonga", 1200,"mensajear",mensajear);
+  Milonga = new Robot("Milonga", 1200, "mensajear", mensajear);
 
 }
 
 // Ejercicio 6
 function ejercicio6() {
 
-  RobotMensajero = function(nombre, peso, directiva, f_directiva){
-    Robot.call(this,nombre,peso,directiva,f_directiva);
+  RobotMensajero = function(nombre, peso, directiva, fDirectiva){
+    Robot.call(this,nombre,peso,directiva,fDirectiva);
   }
 
   RobotMensajero.prototype.presentarse = Malambo.presentarse;
@@ -76,7 +76,25 @@ function ejercicio6() {
 
 // Ejercicio 7
 function ejercicio7() {
+  Robot.prototype.reprogramar = function(nuevaDir, funcDir){
+    delete this[this.directiva];
+    if(this.directiva == nuevaDir){
+      this.directiva = "..."
+    } else {
+      this.directiva = nuevaDir;
+      this[nuevaDir] = funcDir;
+    }
+  }
 
+  Robot.prototype.solicitarAyuda = function(otroRobot){
+    if(this.ayudante != undefined){
+      this.ayudante.solicitarAyuda(otroRobot);
+    } else {
+      this.ayudante = otroRobot;
+      otroRobot.directiva = this.directiva;
+      otroRobot[this.directiva] = this[this.directiva];
+    }
+  }
 }
 
 // Editen esta función para que devuelva lo que quieran mostrar en la salida.
@@ -288,6 +306,7 @@ function crearTest(i, f) {
           if (actual !== expected) {
             fail(i, "Se esperaba " + expected + " pero se obtuvo: " + actual)}
         } else {
+          console.log(actual, expected)
           if (actual !== true) {
             fail(i, "Falló la condición del test.")
           }
