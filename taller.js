@@ -18,11 +18,9 @@ function ejercicio2() {
 
 // Ejercicio 3
 function ejercicio3() {
-
   Malambo.presentarse = function(){
     return "Hola, soy " + this.nombre + " y me encanta " + this.directiva+".";
   }
-
   Malambo.limpiar = function(){
     this.peso += 1;
     return "limpiar";
@@ -36,7 +34,6 @@ function ejercicio4() {
     this.peso = peso;
     this.directiva = directiva;
     this[directiva] = fDirectiva;
-
   }
   Robot.prototype.presentarse = Malambo.presentarse;
   Object.setPrototypeOf(Malambo, Robot.prototype);
@@ -45,56 +42,50 @@ function ejercicio4() {
 
 // Ejercicio 5
 function ejercicio5() {
-
   function mensajear(rem,dest,msg){
     if(msg in dest){
       let respuesta_dest = dest[msg]();
-      if(respuesta_dest in rem){
-        return rem[respuesta_dest]();
-      }else{
-        return respuesta_dest;
-      }
+      return respuesta_dest in rem ? rem[respuesta_dest]() : respuesta_dest;
     }
     return msg;
   }
-
   Milonga = new Robot("Milonga", 1200, "mensajear", mensajear);
-
 }
 
 // Ejercicio 6
 function ejercicio6() {
-
   RobotMensajero = function(nombre, peso, directiva, fDirectiva){
     Robot.call(this,nombre,peso,directiva,fDirectiva);
   }
-
   RobotMensajero.prototype.presentarse = Malambo.presentarse;
   RobotMensajero.prototype.mensajear = Milonga.mensajear;
-
 }
 
 // Ejercicio 7
-function ejercicio7() {
-  Robot.prototype.reprogramar = function(nuevaDir, funcDir){
-    delete this[this.directiva];
-    if(this.directiva == nuevaDir){
-      this.directiva = "..."
-    } else {
-      this.directiva = nuevaDir;
-      this[nuevaDir] = funcDir;
-    }
-  }
 
-  Robot.prototype.solicitarAyuda = function(otroRobot){
-    if(this.ayudante != undefined){
-      this.ayudante.solicitarAyuda(otroRobot);
-    } else {
-      this.ayudante = otroRobot;
-      otroRobot.directiva = this.directiva;
-      otroRobot[this.directiva] = this[this.directiva];
-    }
+function reprogramar(nuevaDir, funcDir) {
+  delete this[this.directiva];
+  if(this.directiva == nuevaDir){
+    this.directiva = "..."
+  } else {
+    this.directiva = nuevaDir;
+    this[nuevaDir] = funcDir;
   }
+}
+
+function solicitarAyuda(otroRobot){
+  if(this.ayudante != undefined){
+    this.ayudante.solicitarAyuda(otroRobot);
+  } else {
+    this.ayudante = otroRobot;
+    otroRobot.directiva = this.directiva;
+    otroRobot[this.directiva] = this[this.directiva];
+  }
+}
+
+function ejercicio7() {
+  Robot.prototype.reprogramar = reprogramar;
+  Robot.prototype.solicitarAyuda = solicitarAyuda;
 }
 
 // Editen esta función para que devuelva lo que quieran mostrar en la salida.
@@ -116,11 +107,6 @@ function calcularResultado() {
   return res;
 }
 
-// Agreguen aquí los tests representados como funciones que toman un objeto res como argumento.
-  // Pueden llamar a res.write para escribir en la salida
-  // Pueden llamar a res.test para
-    // probar que una condición se cumple (pasándole la condición como único argumento)
-    // o para probar que dos valores son iguales (pasándole dos argumentos)
 
 // Test Ejercicio 1
 function testEjercicio1(res) {
@@ -128,7 +114,10 @@ function testEjercicio1(res) {
   res.test(Malambo.nombre, "Malambo");
   res.write("Peso de Malambo: " + Malambo.peso);
   res.test(Malambo.peso, 500);
+  res.write("Directiva de Malambo: " + Malambo.directiva);
+  res.test(Malambo.directiva, "limpiar");
 }
+
 
 // Test Ejercicio 2
 function testEjercicio2(res) {
@@ -138,7 +127,10 @@ function testEjercicio2(res) {
   res.test(Chacarera.peso, 1500);
   res.test(!Chacarera.isPrototypeOf(Malambo));
   res.test(Malambo.isPrototypeOf(Chacarera));
+  res.write("Directiva de Chacarera: " + Chacarera.directiva);
+  res.test(Chacarera.directiva, "cortar el pasto");
 }
+
 
 // Test Ejercicio 3
 function testEjercicio3(res) {
